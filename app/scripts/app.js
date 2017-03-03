@@ -28,3 +28,10 @@
         .module('blocJams', ['ui.router'])
         .config(config);
 })();
+
+// Request data from the backend
+// Present that data to the user
+// Accept input from the user
+// Send new/updated data back to the backend
+
+// IIFE - immediately invoked function expression
