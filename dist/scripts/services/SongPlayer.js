@@ -29,16 +29,24 @@
             currentSong = song;
         };
         
+        
+/** private playSong function
+
+*/
+        var playSong = function(song) {
+            currentBuzzObject.play();
+            song.playing = true;
+        };
+        
         //adding play mmethod to SongPlayer to play song - buzz
         //get song from Album view; ng-repeat passes song
         SongPlayer.play = function(song) {
             if (currentSong !== song) {
                 setSong(song);                
-                currentBuzzObject.play();
-                song.playing = true;
+                playSong(song);
             } else if (currentSong === song) {
                 if(currentBuzzObject.isPaused()){
-                    currentBuzzObject.play();
+                    playSong(song);
                 }
             }
         };
