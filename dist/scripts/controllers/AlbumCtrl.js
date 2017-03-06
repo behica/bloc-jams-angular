@@ -1,9 +1,11 @@
 (function () {
-    function AlbumCtrl() {
-        this.albumData = albumPicasso;
+    function AlbumCtrl(Fixtures) {
+        //gets albumPicasso from Fixtures.js
+        this.albumData = Fixtures.getAlbum();
     }
     
     angular
         .module('blocJams')
-        .controller('AlbumCtrl', AlbumCtrl);
+    //inject dependencies in array
+        .controller('AlbumCtrl', ['Fixtures',AlbumCtrl]);
 })();
