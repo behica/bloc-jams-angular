@@ -1,9 +1,14 @@
 (function() {
-    function SongPlayer() {
+    function SongPlayer(Fixtures) {
+        
         //setting object and returning makes public and available to application
         var SongPlayer = {};
-        
-        var currentSong = null;
+/**
+* @func Fixtures.getAlbum
+* @type variable
+* @desc store the album information in the service
+*/
+        var currentAlbum = Fixtures.getAlbum();
 /**
 * @desc Buzz object audio file
 * @type {Object}
@@ -18,7 +23,7 @@
         var setSong = function(song){
             if(currentBuzzObject){
                 currentBuzzObject.stop();
-                currentSong.playing = null;
+                SongPlayer.currentSong.playing = null;
             }
         
             currentBuzzObject = new buzz.sound(song.audioUrl, {
@@ -26,25 +31,43 @@
                 preload: true
             });
             
-            currentSong = song;
+            SongPlayer.currentSong = song;
         };
+/**
+* @func getSongIndex
+* @desc get the index of the current song
+*/
+        var getSongIndex = function(song) {
+            return currentAlbum.songs.indexOf(song);
+        };
+        
+        SongPlayer.currentSong = null;
         
         
 /** private playSong function
-
+    @function playSong
+    @desc plays the song and marks the song as playing
+    @param {Object} song
 */
         var playSong = function(song) {
             currentBuzzObject.play();
             song.playing = true;
         };
-        
+ 
+/**
+ * @function play
+ * @desc Play current or new song
+ * @param {Object} song
+ */          
         //adding play mmethod to SongPlayer to play song - buzz
         //get song from Album view; ng-repeat passes song
+        
         SongPlayer.play = function(song) {
-            if (currentSong !== song) {
+            song = song || SongPlayer.currentSong;
+            if (SongPlayer.currentSong !== song) {
                 setSong(song);                
                 playSong(song);
-            } else if (currentSong === song) {
+            } else if (SongPlayer.currentSong === song) {
                 if(currentBuzzObject.isPaused()){
                     playSong(song);
                 }
@@ -52,8 +75,27 @@
         };
         
         SongPlayer.pause = function(song) {
+            song = song || SongPlayer.currentSong;
             currentBuzzObject.pause();
             song.playing = false;
+        };
+        
+/**
+* @func SongPlayer.previous
+* @desc Switch to previous song in index unless first song, then stay at first song
+*/
+        SongPlayer.previous = function() {
+            var currentSongIndex = getSongIndex(SongPlayer.currentSong);
+            currentSongIndex--;
+            
+            if(currentSongIndex < 0){
+                currentBuzzObject.stop();
+                SongPlayer.currentSong.playing = null;
+            } else {
+                var song = currentAlbum.songs[currentSongIndex];
+                setSong(song);
+                playSong(song);
+            }
         };
         
         return SongPlayer;
