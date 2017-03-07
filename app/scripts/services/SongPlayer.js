@@ -9,6 +9,7 @@
 * @desc store the album information in the service
 */
         var currentAlbum = Fixtures.getAlbum();
+        
 /**
 * @desc Buzz object audio file
 * @type {Object}
@@ -22,8 +23,7 @@
 */
         var setSong = function(song){
             if(currentBuzzObject){
-                currentBuzzObject.stop();
-                SongPlayer.currentSong.playing = null;
+                stopSong();
             }
         
             currentBuzzObject = new buzz.sound(song.audioUrl, {
@@ -39,6 +39,11 @@
 */
         var getSongIndex = function(song) {
             return currentAlbum.songs.indexOf(song);
+        };
+        
+        var stopSong = function(song){
+            currentBuzzObject.stop();
+            SongPlayer.currentSong.playing = null;
         };
         
         SongPlayer.currentSong = null;
@@ -81,6 +86,25 @@
         };
         
 /**
+* @func next
+* @desc Switch to next song in index. If at end of album, switch to first song in album index
+*/
+        SongPlayer.next = function() {
+            var currentSongIndex = getSongIndex(SongPlayer.currentSong);
+            currentSongIndex++;
+            
+            if(currentSongIndex < currentAlbum.songs.length){
+                var song = currentAlbum.songs[currentSongIndex]
+                setSong(song);
+                playSong(song);
+            } else {
+                var song = currentAlbum.songs[0];
+                setSong(song);
+                playSong(song);
+            }
+        };
+        
+/**
 * @func SongPlayer.previous
 * @desc Switch to previous song in index unless first song, then stay at first song
 */
@@ -89,8 +113,7 @@
             currentSongIndex--;
             
             if(currentSongIndex < 0){
-                currentBuzzObject.stop();
-                SongPlayer.currentSong.playing = null;
+                stopSong();
             } else {
                 var song = currentAlbum.songs[currentSongIndex];
                 setSong(song);
@@ -103,5 +126,5 @@
     
     angular
         .module('blocJams')
-        .factory('SongPlayer', SongPlayer);
+        .factory('SongPlayer', ['Fixtures', SongPlayer]);
 })();
