@@ -144,6 +144,16 @@
             }
         };
         
+        SongPlayer.mute = function() {
+            currentBuzzObject.mute();
+            SongPlayer.currentSong.isMuted = true;
+        };
+        
+        SongPlayer.unmute = function() {
+            currentBuzzObject.unmute();
+            SongPlayer.currentSong.isMuted = false;
+        };
+        
 /**
 * @func SongPlayer.previous
 * @desc Switch to previous song in index unless first song, then stay at first song
